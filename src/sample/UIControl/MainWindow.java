@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import sample.Client;
 import sample.ForProject.MessageType;
 import sample.ForProject.Track;
 
@@ -27,7 +28,7 @@ public class MainWindow {
     private Stage stage;
     private List<Track> trackList;
 
-
+    private Client client;
     @FXML
     private TableView<Track> tableTracks;
 
@@ -81,6 +82,13 @@ public class MainWindow {
     private Button getTracks;
 
 
+    public MainWindow() {
+        try{
+            client = new Client(this);
+        } catch (IOException ex){
+            this.listTracks(null,"Ошибка соединения с сервером");
+        }
+    }
 /*
       Инициализация таблицы и присвоение типов переменным
 */
@@ -141,11 +149,6 @@ public class MainWindow {
     private StringProperty getGenre(TableColumn.CellDataFeatures<Track, String> param) {
         return new SimpleStringProperty(param.getValue().getNameGenre());
     }
-    public void start(Stage stage) {
-        this.stage = stage;
-
-
-    }
 
     private StringProperty getAlbum(TableColumn.CellDataFeatures<Track, String> param) {
         return new SimpleStringProperty(param.getValue().getNameGenre());
@@ -160,7 +163,8 @@ public class MainWindow {
     /**
      * Метод для сортировки списка треков и преобразования списка в тип ObservableArrayList
      */
-    public void listTracks(List<Track> list ) {
+    public void listTracks(List<Track> list , String message) {
+        labelS.setText(message);
         trackList = list;
         Collections.sort(trackList);
         initTableData(FXCollections.observableArrayList(trackList));
@@ -177,7 +181,7 @@ public class MainWindow {
         Stage newStage = new Stage();
         FXMLLoader addLoader = new FXMLLoader();
         newStage.setTitle(MessageType.addTrack.name());
-        URL xmlUrl = getClass().getResource("/sample/fxml/addSample.fxml");
+        URL xmlUrl = getClass().getResource("/sample/fxmlFile/addSample.fxml");
         addLoader.setLocation(xmlUrl);
         try {
             Parent newRoot = addLoader.load();
@@ -185,7 +189,7 @@ public class MainWindow {
             newStage.setScene(newScene);
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
+            alert.setTitle("No Connection");
             alert.setHeaderText(e.getMessage());
             alert.showAndWait();
         }
@@ -193,6 +197,18 @@ public class MainWindow {
         AddWindow controller = addLoader.getController();
         controller.setStage(newStage,trackList);
         newStage.showAndWait();
+        if (controller.isOnClick()) {
+            try {
+                client.receivingMessage(MessageType.addTrack, controller.getTrack(), controller.getTrack().getNumberTrack());
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("No connection");
+                alert.setHeaderText(e.getMessage());
+                alert.setContentText("Please check your connection to the server");
+                alert.showAndWait();
+                tableTracks.getAccessibleHelp();
+            }
+        }
     }
 
     @FXML
@@ -244,14 +260,39 @@ public class MainWindow {
         editStage.setScene(editScene);
         editStage.initModality(Modality.APPLICATION_MODAL);
         EditWindow controller = editLoader.getController();
-
+        if (tableTracks.getSelectionModel().getSelectedIndex() > -1) {
             controller.setEditStage(editStage);
             Track trackEdit = tableTracks.getSelectionModel().getSelectedItem();
             controller.setEditTrack(trackEdit);
             editStage.showAndWait();
-
+            client.receivingMessage( MessageType.editTrack,trackEdit, trackEdit.getNumberTrack());
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText("No Person Selected");
+            alert.setContentText("Please select a person in the table.");
+            alert.showAndWait();
+        }
     }
-
+    public void start(Stage stage) {
+        this.stage = stage;
+        Track obj = new Track();
+        int index = -1;
+        try {
+            client.receivingMessage(MessageType.getTrack, obj, index);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No connection");
+            alert.setHeaderText(e.getMessage());
+            alert.setContentText("Please check your connection to the server");
+            alert.showAndWait();
+            tableTracks.getAccessibleHelp();
+        }
+    }
+    @FXML
+    public void getTracks(ActionEvent actionEvent) {
+        start(stage);
+    }
 
     public void search(ActionEvent actionEvent) {
         List<Track> listSearch = new ArrayList<Track>();
@@ -302,10 +343,6 @@ public class MainWindow {
         }
     }
 
-    @FXML
-    void getTracks(ActionEvent event) {
-        start(stage);
-    }
 
 
 }

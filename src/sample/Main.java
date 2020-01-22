@@ -24,7 +24,7 @@ public class Main extends Application {
 
    MainWindow controller;
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage){
         try {
             URL xmlUrl=getClass().getResource("fxml/sample.fxml");
             FXMLLoader loader=new FXMLLoader();
@@ -43,13 +43,13 @@ public class Main extends Application {
             });
         } catch (LoadException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ошибка запуска");
+            alert.setTitle("No Connection");
+            alert.setHeaderText("Нет соединения с сервером");
             alert.showAndWait();
         }
         catch (IOException e){e.printStackTrace();}
 
     }
-
 
     public static void main(String[] args) {
         launch(args);

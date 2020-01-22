@@ -1,8 +1,8 @@
 package sample.ForProject;
 
 public enum MessageType {
-    getFlight,
-    deleteFlight,
+    getTrack,
+    deleteTrack,
     editTrack,
     addTrack;
 }

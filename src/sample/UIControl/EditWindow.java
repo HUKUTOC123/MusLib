@@ -92,6 +92,8 @@ public class EditWindow {
     public void  setEditStage(Stage stage){
         this.stage=stage;
     }
+
+
     public void edit(ActionEvent actionEvent) throws ParseException {
         track.setNameTrack(nameTrack.getText());
         track.setPerformerName(performer.getText());
@@ -104,7 +106,7 @@ public class EditWindow {
     }
 
     public void setEditTrack(Track track){
-        /*this.track=track;
+        this.track=track;
         id.setText(Integer.toString(track.getNumberTrack()));
         nameTrack.setText(track.getNameTrack());
         performer.setText(track.getPerformerName());
@@ -115,7 +117,7 @@ public class EditWindow {
         int mouth=Integer.parseInt(dateString[1]);
         int year=Integer.parseInt(dateString[2]);
         dataPicker.setValue(LocalDate.of(year,mouth,day));
-        time.setText(converterDateToString(track.getRecordLength())[1]);*/
+        time.setText(converterDateToString(track.getRecordLength())[1]);
     }
 
     private String[] converterDateToString (Date date){
