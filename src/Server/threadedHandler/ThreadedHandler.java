@@ -41,7 +41,7 @@ public class ThreadedHandler implements Runnable {
                         System.out.println("Ошибка приема сообщения");
                     }
                 }
-                String getFlightsJson;
+                String getTracksJson;
                 // собственный сериализатор десериализатор
                 Gson  gson = new GsonBuilder()
                         .setPrettyPrinting()
@@ -53,8 +53,8 @@ public class ThreadedHandler implements Runnable {
                 switch (message.getMessage()) {
                     case getTrack:
                         //сериализуем список треков и отправляем клиенту
-                        getFlightsJson = new Gson().toJson(tracks);
-                        write.writeUTF(getFlightsJson);
+                        getTracksJson = new Gson().toJson(tracks);
+                        write.writeUTF(getTracksJson);
                         write.flush();
                         break;
 
@@ -69,13 +69,13 @@ public class ThreadedHandler implements Runnable {
                             }
                         }
                         //получившийся список сериализуем и отправляем клиенту
-                        getFlightsJson = new Gson().toJson(tracks);
-                        write.writeUTF(getFlightsJson);
+                        getTracksJson = new Gson().toJson(tracks);
+                        write.writeUTF(getTracksJson);
                         write.flush();
                         break;
                     case editTrack:
                         //получаем объект на изменение
-                        Track flightEdit= message.getObject();
+                        Track trackEdit= message.getObject();
                         //получаем его индекс
                         int indexEdit= message.getIndex();
                         //сортируем список чтобы индекс не отличался от сортированного списка клиента
@@ -83,21 +83,21 @@ public class ThreadedHandler implements Runnable {
                         //изменяем объект списка
                         for(int j=0;j<tracks.size(); j++) {
                             if(tracks.get(j).getNumberTrack()==indexEdit){
-                                tracks.set(j,flightEdit);
+                                tracks.set(j,trackEdit);
                                 break;
                             }
                         }
                         //сериализуем список и отправляем клиенту
-                        getFlightsJson = new Gson().toJson(tracks);
-                        write.writeUTF(getFlightsJson);
+                        getTracksJson = new Gson().toJson(tracks);
+                        write.writeUTF(getTracksJson);
                         write.flush();
                         break;
                     case addTrack:
                         Track trackAdd=(Track) message.getObject();
                         tracks.add(trackAdd);
                         Collections.sort(tracks);
-                        getFlightsJson = new Gson().toJson(tracks);
-                        write.writeUTF(getFlightsJson);
+                        getTracksJson = new Gson().toJson(tracks);
+                        write.writeUTF(getTracksJson);
                         write.flush();
                         break;
                     default:
@@ -113,7 +113,7 @@ public class ThreadedHandler implements Runnable {
     /**
      * создаем тестовый список для проверки работы программы
      *
-     * @return возвращает список ArrayList типа с элементами типа Flight
+     * @return возвращает список ArrayList типа с элементами типа Track
      */
     public ArrayList<Track> getTracks() {
         GregorianCalendar calendar1 = new GregorianCalendar(2019, 11, 05, 16, 00);
