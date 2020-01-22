@@ -94,8 +94,7 @@ public class MainWindow {
 */
     @FXML
     private void initialize() {
-
-        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        id.setCellValueFactory(new PropertyValueFactory<>("numberTrack"));
         performer.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Track, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Track, String> param) {
@@ -120,13 +119,14 @@ public class MainWindow {
                 return getAlbum(param);
             }
         });
-        date.setCellValueFactory(param -> getDateFromDate(param));
+
         time.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Track, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Track, String> param) {
                 return getTime(param);
             }
         });
+        date.setCellValueFactory(param -> getDateFromDate(param));
     }
 
 /*
@@ -151,7 +151,7 @@ public class MainWindow {
     }
 
     private StringProperty getAlbum(TableColumn.CellDataFeatures<Track, String> param) {
-        return new SimpleStringProperty(param.getValue().getNameGenre());
+        return new SimpleStringProperty(param.getValue().getTitleAlbum());
     }
 
     private StringProperty getTime(TableColumn.CellDataFeatures<Track, String> param) {
@@ -181,7 +181,7 @@ public class MainWindow {
         Stage newStage = new Stage();
         FXMLLoader addLoader = new FXMLLoader();
         newStage.setTitle(MessageType.addTrack.name());
-        URL xmlUrl = getClass().getResource("/sample/fxmlFile/addSample.fxml");
+        URL xmlUrl = getClass().getResource("/sample/fxml/addSample.fxml");
         addLoader.setLocation(xmlUrl);
         try {
             Parent newRoot = addLoader.load();
@@ -240,6 +240,9 @@ public class MainWindow {
         int index = tableTracks.getSelectionModel().getSelectedIndex();
         if (index > -1) {
             tableTracks.getItems().remove(index);
+            Track obj =  tableTracks.getItems().get(index);
+            tableTracks.getItems().remove(index);
+            client.receivingMessage(MessageType.deleteTrack, obj,obj.getNumberTrack());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Selection");
@@ -268,9 +271,9 @@ public class MainWindow {
             client.receivingMessage( MessageType.editTrack,trackEdit, trackEdit.getNumberTrack());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Person Selected");
-            alert.setContentText("Please select a person in the table.");
+            alert.setTitle("Ошибка выбора");
+            alert.setHeaderText("Удаляемый трек не выбран");
+            alert.setContentText("Выберите трек в таблице");
             alert.showAndWait();
         }
     }
@@ -310,7 +313,6 @@ public class MainWindow {
                     while ((searchString.charAt(j) == track.toString().charAt(i)) && (j <= lengthSearch - 1)) {
                         if (j == lengthSearch - 1) {
                             listSearch.add(track);
-                            System.out.println(track);
                             break exit;
                         }
                         flag = true;
@@ -322,6 +324,10 @@ public class MainWindow {
                     }
                 }
             }
+            if (listSearch.size()!=0) {
+                listTracks(listSearch, "Поиск по запросу " + searchString + " прошел успешно...");
+            } else
+                listTracks(listSearch, "Поиск по запросу " + searchString + " не нашел ни одного совпадения...");
         }
     }
     private boolean isClick() {

@@ -103,6 +103,7 @@ public class AddWindow {
     @FXML
     public void add(ActionEvent actionEvent) throws ParseException {
         track = new Track();
+        if (inputCheck()) {
             track.setNumberTrack(Integer.parseInt(id.getText()));
             track.setNameTrack(nameTrack.getText());
             track.setPerformerName(performer.getText());
@@ -110,11 +111,12 @@ public class AddWindow {
             track.setAlbumTitle(album.getText());
             String dateString = datePicker.getValue().format(formatter) + " " + time.getText();
             track.setRecordLength(new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(dateString));
-            oldTracks.add(track);
             stage.close();
+            flag = true;
+        }
     }
 
-   /* private boolean inputCheck() {
+    private boolean inputCheck() {
         String errorMessage = "";
         if ((id.getText() == null) || (id.getText().length() == 0)) {
             errorMessage += "Заполните поле номера!";
@@ -164,7 +166,7 @@ public class AddWindow {
             return false;
         }
 
-    }*/
+    }
         public boolean searchId(int id){
             for(Track track:oldTracks){
                 if (track.getNumberTrack()==id){

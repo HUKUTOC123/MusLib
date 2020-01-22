@@ -42,7 +42,7 @@ public class ThreadedHandler implements Runnable {
                     }
                 }
                 String getTracksJson;
-                // собственный сериализатор десериализатор
+                // сериализатор-десериализатор
                 Gson  gson = new GsonBuilder()
                         .setPrettyPrinting()
                         .registerTypeAdapter(GeneralMessage.class, new CustomConverter())
@@ -111,7 +111,7 @@ public class ThreadedHandler implements Runnable {
     }
 
     /**
-     * создаем тестовый список для проверки работы программы
+     * тестовый список
      *
      * @return возвращает список ArrayList типа с элементами типа Track
      */
@@ -119,7 +119,7 @@ public class ThreadedHandler implements Runnable {
         GregorianCalendar calendar1 = new GregorianCalendar(2019, 11, 05, 16, 00);
         Date date1 = calendar1.getTime();
         ArrayList<Track> list = new ArrayList<Track>();
-        Track track1 = new Track("Gorod","rock", 1 , date1, "FirstAlbum","Gorod412" );
+        Track track1 = new Track(1,"Город 312", "Вне зоны доступа", "Поп", "Лучшее 2006", date1 );
         list.add(track1);
         return list;
     }

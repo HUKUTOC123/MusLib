@@ -31,7 +31,7 @@ public class Main extends Application {
             loader.setLocation(xmlUrl);
             Parent root=loader.load();
             primaryStage.setTitle("Музыкальная библиотека");
-            primaryStage.setScene(new Scene(root, 800, 585));
+            primaryStage.setScene(new Scene(root, 800, 600));
             primaryStage.show();
             controller=loader.getController();
             controller.start(primaryStage);

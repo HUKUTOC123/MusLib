@@ -22,7 +22,7 @@ public class Track implements Comparable<Track> {
         performerName = "";
     }
 
-    public Track(String nameTrack, String nameGenre, int numberTrack, Date recordLength, String titleAlbum, String performerName) {
+    public Track(int numberTrack,String performerName, String nameTrack, String nameGenre, String titleAlbum, Date recordLength) {
         this.numberTrack = numberTrack;
         this.nameTrack = nameTrack;
         this.nameGenre = nameGenre;
@@ -61,7 +61,7 @@ public class Track implements Comparable<Track> {
     }
 
     public void setAlbumTitle(String s) {
-        this.titleAlbum = titleAlbum;
+        this.titleAlbum = s;
     }
 
     public String getPerformerName() {

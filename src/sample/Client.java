@@ -46,7 +46,7 @@ public class Client {
      * и его потоков ввода/вывода
      */
     public Client(MainWindow controller)throws IOException{
-        fil=new FileInputStream("src/general/config.properties");
+        fil=new FileInputStream("src/sample/config.properties");
         property=new Properties();
         property.load(fil);
         String host=property.getProperty("may.host");
@@ -98,7 +98,7 @@ public class Client {
     public void handlerAlerts(String incomingMessage){
         Type type = new ListParameterizedType(Track.class);
         TrackLST list = new TrackLST(new Gson().fromJson(incomingMessage, type));
-        controller.listTracks(list.getJournal(),"Список рейсов обновлен");
+        controller.listTracks(list.getJournal(),"Список обновлен");
     }
 
     public void waitingMessage(){
