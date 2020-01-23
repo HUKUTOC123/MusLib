@@ -158,8 +158,8 @@ public class AddWindow {
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(stage);
-            alert.setTitle("Invalid Fields");
-            alert.setHeaderText("Please correct invalid fields");
+            alert.setTitle("Неверное значение");
+            alert.setHeaderText("Введите корректные данные");
             alert.setContentText(errorMessage);
             alert.showAndWait();
 

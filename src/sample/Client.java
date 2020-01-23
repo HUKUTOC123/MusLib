@@ -40,7 +40,7 @@ public class Client {
     private Properties property;
     private FileInputStream fil;
 
-    /**gfbggfhfhgfhfgh
+    /*
      *
      * В конструкторе происходит инициализация сокета
      * и его потоков ввода/вывода
@@ -146,7 +146,6 @@ public class Client {
             return null;
         }
 
-        // implement equals method too! (as per javadoc)
     }
 }
 
