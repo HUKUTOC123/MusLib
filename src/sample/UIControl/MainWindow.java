@@ -195,7 +195,7 @@ public class MainWindow {
         }
         newStage.initModality(Modality.APPLICATION_MODAL);
         AddWindow controller = addLoader.getController();
-        controller.setStage(newStage,trackList);
+        controller.setStage(newStage, (ArrayList<Track>) trackList);
         newStage.showAndWait();
         if (controller.isOnClick()) {
             try {

@@ -7,16 +7,16 @@ import Server.request.Message;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import sample.ForProject.Track;
+import sample.UIControl.AddWindow;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ThreadedHandler implements Runnable {
     private Socket incoming;
-    private List<Track> tracks =getTracks();
+    private List<Track> tracks = getTracks();
 
 
     public ThreadedHandler(Socket incoming) {
@@ -26,9 +26,9 @@ public class ThreadedHandler implements Runnable {
     @Override
     public void run() {
         try (DataOutputStream write = new DataOutputStream(
-                                                incoming.getOutputStream());
+                incoming.getOutputStream());
              DataInputStream read = new DataInputStream(
-                                                incoming.getInputStream())
+                     incoming.getInputStream())
         ) {
             while (true) {
                 while (read.available() == 0) {
@@ -43,7 +43,7 @@ public class ThreadedHandler implements Runnable {
                 }
                 String getTracksJson;
                 // сериализатор-десериализатор
-                Gson  gson = new GsonBuilder()
+                Gson gson = new GsonBuilder()
                         .setPrettyPrinting()
                         .registerTypeAdapter(GeneralMessage.class, new CustomConverter())
                         .registerTypeAdapter(Track.class, new CustomConverterTrack())
@@ -60,10 +60,10 @@ public class ThreadedHandler implements Runnable {
 
                     case deleteTrack:
                         //получаем из запроса индекс элемента на удаление
-                        int i= message.getIndex();
+                        int i = message.getIndex();
                         //удаяем его из списка
-                        for(int j=0;j<tracks.size(); j++) {
-                            if(tracks.get(j).getNumberTrack()==i){
+                        for (int j = 0; j < tracks.size(); j++) {
+                            if (tracks.get(j).getNumberTrack() == i) {
                                 tracks.remove(j);
                                 break;
                             }
@@ -75,15 +75,15 @@ public class ThreadedHandler implements Runnable {
                         break;
                     case editTrack:
                         //получаем объект на изменение
-                        Track trackEdit= message.getObject();
+                        Track trackEdit = message.getObject();
                         //получаем его индекс
-                        int indexEdit= message.getIndex();
+                        int indexEdit = message.getIndex();
                         //сортируем список чтобы индекс не отличался от сортированного списка клиента
                         Collections.sort(tracks);
                         //изменяем объект списка
-                        for(int j=0;j<tracks.size(); j++) {
-                            if(tracks.get(j).getNumberTrack()==indexEdit){
-                                tracks.set(j,trackEdit);
+                        for (int j = 0; j < tracks.size(); j++) {
+                            if (tracks.get(j).getNumberTrack() == indexEdit) {
+                                tracks.set(j, trackEdit);
                                 break;
                             }
                         }
@@ -93,7 +93,7 @@ public class ThreadedHandler implements Runnable {
                         write.flush();
                         break;
                     case addTrack:
-                        Track trackAdd=(Track) message.getObject();
+                        Track trackAdd = (Track) message.getObject();
                         tracks.add(trackAdd);
                         Collections.sort(tracks);
                         getTracksJson = new Gson().toJson(tracks);
@@ -112,15 +112,40 @@ public class ThreadedHandler implements Runnable {
 
     /**
      * тестовый список
-     *
-     * @return возвращает список ArrayList типа с элементами типа Track
      */
-    public ArrayList<Track> getTracks() {
-        GregorianCalendar calendar1 = new GregorianCalendar(2019, 11, 05, 16, 00);
-        Date date1 = calendar1.getTime();
-        ArrayList<Track> list = new ArrayList<Track>();
-        Track track1 = new Track(1,"Город 312", "Вне зоны доступа", "Поп", "Лучшее 2006", date1 );
-        list.add(track1);
-        return list;
+    public ArrayList<Track> getTracks()  {
+        /*Track track = new Track();
+        File sourceFile = new File("output.txt");
+        String s ;
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("dd.MM.yyyy HH:mm");
+        ArrayList <Track> Out = new ArrayList<>();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(sourceFile));
+            while ((s = reader.readLine()) != null) {
+                String[] string = s.split("//");
+                String numberTrack = string[0];
+                String nameTrack = string[1];
+                String nameGenre = string[2];
+                String PerformerName = string[3];
+                String titleAlbum = string[4];
+                String rec = string[5];
+                track.setNumberTrack(Integer.parseInt(numberTrack));
+                track.setNameTrack(nameTrack);
+                track.setPerformerName(PerformerName);
+                track.setNameGenre(nameGenre);
+                track.setAlbumTitle(titleAlbum);
+                track.setRecordLength(format.parse(rec));
+                Out.add(track);
+            }
+        }
+        catch (Exception ioe) {
+            ioe.printStackTrace();
+
+        }
+        return Out;
+    }*/
+        ArrayList <Track> Out = AddWindow.deserialisationTrackLib();
+       return  Out;
     }
 }

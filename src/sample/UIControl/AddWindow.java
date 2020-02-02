@@ -1,13 +1,11 @@
 package sample.UIControl;
 
+import java.io.*;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -20,12 +18,12 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import sample.ForProject.Track;
 
-public class AddWindow {
+public class AddWindow implements Serializable{
     private DateTimeFormatter formatter;
     private Stage stage;
     private Track track;
     private SimpleDateFormat dateFormat;
-    private List<Track> oldTracks = new ArrayList<>();
+    private ArrayList<Track> oldTracks = new ArrayList<>();
 
 
     private boolean flag = false;
@@ -90,7 +88,7 @@ public class AddWindow {
         };
 
     }
-    public void setStage(Stage stage,List<Track> oldTracks) {
+    public void setStage(Stage stage,ArrayList<Track> oldTracks) {
         this.stage = stage;
         this.oldTracks=oldTracks;
     }
@@ -103,6 +101,8 @@ public class AddWindow {
     @FXML
     public void add(ActionEvent actionEvent) throws ParseException {
         track = new Track();
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("dd.MM.yyyy HH:mm");
         if (inputCheck()) {
             track.setNumberTrack(Integer.parseInt(id.getText()));
             track.setNameTrack(nameTrack.getText());
@@ -111,10 +111,73 @@ public class AddWindow {
             track.setAlbumTitle(album.getText());
             String dateString = datePicker.getValue().format(formatter) + " " + time.getText();
             track.setRecordLength(new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(dateString));
+            oldTracks.add(track);
+            serialisationTrackLib(oldTracks);
             stage.close();
             flag = true;
         }
     }
+
+    public static void serialisationTrackLib( ArrayList<Track> TracksList)  {
+        try{
+            FileOutputStream fos= new FileOutputStream("file.txt");
+            ObjectOutputStream oos= new ObjectOutputStream(fos);
+            oos.writeObject(TracksList);
+            oos.close();
+            fos.close();
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Track> deserialisationTrackLib() {
+        ArrayList<Track> newTrackList= new ArrayList<>();
+        try
+        {
+            FileInputStream fis = new FileInputStream("file.txt");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            newTrackList = (ArrayList) ois.readObject();
+            ois.close();
+            fis.close();
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return newTrackList;
+    }
+public ArrayList<Track> listFromFile(){
+    File sourceFile = new File("output.txt");
+    String s ;
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("dd.MM.yyyy HH:mm");
+        ArrayList <Track> Out = new ArrayList<>();
+    try {
+        BufferedReader reader = new BufferedReader(new FileReader(sourceFile));
+        while ((s = reader.readLine()) != null) {
+            String[] string = s.split("//");
+            String numberTrack = string[0];
+            String nameTrack = string[1];
+            String nameGenre = string[2];
+            String PerformerName = string[3];
+            String titleAlbum = string[4];
+            String rec = string[5];
+            track.setNumberTrack(Integer.parseInt(numberTrack));
+            track.setNameTrack(nameTrack);
+            track.setPerformerName(PerformerName);
+            track.setNameGenre(nameGenre);
+            track.setAlbumTitle(titleAlbum);
+            track.setRecordLength(format.parse(rec));
+            Out.add(track);
+        }
+    }
+        catch (Exception ioe) {
+            ioe.printStackTrace();
+
+        }
+    return Out;
+}
 
     private boolean inputCheck() {
         String errorMessage = "";
@@ -167,6 +230,7 @@ public class AddWindow {
         }
 
     }
+
         public boolean searchId(int id){
             for(Track track:oldTracks){
                 if (track.getNumberTrack()==id){
