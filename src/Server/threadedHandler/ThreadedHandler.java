@@ -56,22 +56,26 @@ public class ThreadedHandler implements Runnable {
                         getTracksJson = new Gson().toJson(tracks);
                         write.writeUTF(getTracksJson);
                         write.flush();
+                        getTracks();
                         break;
 
                     case deleteTrack:
                         //получаем из запроса индекс элемента на удаление
                         int i = message.getIndex();
                         //удаяем его из списка
+                        Collections.sort(tracks);
                         for (int j = 0; j < tracks.size(); j++) {
                             if (tracks.get(j).getNumberTrack() == i) {
                                 tracks.remove(j);
                                 break;
                             }
                         }
+                        AddWindow.serialisationTrackLib((ArrayList<Track>) tracks);
                         //получившийся список сериализуем и отправляем клиенту
                         getTracksJson = new Gson().toJson(tracks);
                         write.writeUTF(getTracksJson);
                         write.flush();
+
                         break;
                     case editTrack:
                         //получаем объект на изменение
@@ -87,10 +91,12 @@ public class ThreadedHandler implements Runnable {
                                 break;
                             }
                         }
+                        AddWindow.serialisationTrackLib((ArrayList<Track>) tracks);
                         //сериализуем список и отправляем клиенту
                         getTracksJson = new Gson().toJson(tracks);
                         write.writeUTF(getTracksJson);
                         write.flush();
+
                         break;
                     case addTrack:
                         Track trackAdd = (Track) message.getObject();

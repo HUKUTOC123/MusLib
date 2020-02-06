@@ -100,7 +100,7 @@ public class EditWindow {
         track.setNameGenre(genre.getText());
         track.setAlbumTitle(album.getText());
         String dateString = dataPicker.getValue().format(formatter) + " " + time.getText();
-        track.setRecordLength(new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(dateString));
+
         stage.close();
 
     }

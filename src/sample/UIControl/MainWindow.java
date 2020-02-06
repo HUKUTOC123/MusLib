@@ -239,10 +239,9 @@ public class MainWindow {
     public void delete(ActionEvent actionEvent) throws IOException {
         int index = tableTracks.getSelectionModel().getSelectedIndex();
         if (index > -1) {
-            tableTracks.getItems().remove(index);
             Track obj =  tableTracks.getItems().get(index);
             tableTracks.getItems().remove(index);
-            client.receivingMessage(MessageType.deleteTrack, obj,obj.getNumberTrack());
+            client.receivingMessage(MessageType.deleteTrack, obj,index);
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Selection");
@@ -250,7 +249,9 @@ public class MainWindow {
             alert.setContentText("Выберите трек в таблице");
             alert.showAndWait();
         }
+
     }
+
     @FXML
     public void edit(ActionEvent actionEvent) throws IOException {
         Stage editStage = new Stage();
@@ -267,13 +268,12 @@ public class MainWindow {
             controller.setEditStage(editStage);
             Track trackEdit = tableTracks.getSelectionModel().getSelectedItem();
             controller.setEditTrack(trackEdit);
+            AddWindow.serialisationTrackLib((ArrayList<Track>) trackList);
             editStage.showAndWait();
             client.receivingMessage( MessageType.editTrack,trackEdit, trackEdit.getNumberTrack());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Ошибка выбора");
-            alert.setHeaderText("Удаляемый трек не выбран");
-            alert.setContentText("Выберите трек в таблице");
             alert.showAndWait();
         }
     }

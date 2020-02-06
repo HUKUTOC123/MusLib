@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import java.util.Date;
 
-public class Track implements Comparable<Track> {
+public class Track implements Comparable<Track>, Serializable {
 
     String nameTrack;
     String nameGenre;

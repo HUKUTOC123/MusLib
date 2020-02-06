@@ -131,19 +131,16 @@ public class AddWindow implements Serializable{
     }
 
     public static ArrayList<Track> deserialisationTrackLib() {
-        ArrayList<Track> newTrackList= new ArrayList<>();
-        try
-        {
+        ArrayList<Track> newTrackList = new ArrayList<>();
+        try {
             FileInputStream fis = new FileInputStream("file.txt");
             ObjectInputStream ois = new ObjectInputStream(fis);
             newTrackList = (ArrayList) ois.readObject();
             ois.close();
             fis.close();
-        }catch(IOException ioe){
-            ioe.printStackTrace();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return newTrackList;
     }
