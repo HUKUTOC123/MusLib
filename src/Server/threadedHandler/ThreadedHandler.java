@@ -63,7 +63,7 @@ public class ThreadedHandler implements Runnable {
                         //получаем из запроса индекс элемента на удаление
                         int i = message.getIndex();
                         //удаяем его из списка
-                        Collections.sort(tracks);
+
                         for (int j = 0; j < tracks.size(); j++) {
                             if (tracks.get(j).getNumberTrack() == i) {
                                 tracks.remove(j);

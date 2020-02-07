@@ -239,9 +239,9 @@ public class MainWindow {
     public void delete(ActionEvent actionEvent) throws IOException {
         int index = tableTracks.getSelectionModel().getSelectedIndex();
         if (index > -1) {
-            Track obj =  tableTracks.getItems().get(index);
+            Track obj =  tableTracks.getSelectionModel().getSelectedItem();
             tableTracks.getItems().remove(index);
-            client.receivingMessage(MessageType.deleteTrack, obj,index);
+            client.receivingMessage(MessageType.deleteTrack, obj,obj.getNumberTrack());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Selection");
