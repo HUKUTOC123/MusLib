@@ -40,7 +40,7 @@ public class Client {
     private Properties property;
     private FileInputStream fil;
 
-    /*
+    /**
      *
      * В конструкторе происходит инициализация сокета
      * и его потоков ввода/вывода

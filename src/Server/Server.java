@@ -18,12 +18,20 @@ public class Server {
             String port=property.getProperty("may.port");
             try (ServerSocket serverSocket = new ServerSocket(Integer.parseInt(port))) {
                 while (true) {
-                    Socket clientSocket = serverSocket.accept();
+                    Socket clientSocket = null;
+                    try {
+                        clientSocket = serverSocket.accept();
+                    } catch (IOException e) {
+                        if (false) {
+                            System.out.println("Server Stopped.");
+                            return;
+                        }
+                        throw new RuntimeException("Error accepting client connection", e);
+                    }
                     Runnable r = new ThreadedHandler(clientSocket);
                     Thread thread = new Thread(r);
                     thread.start();
                 }
-
             }
         } catch (IOException ex) {
             ex.printStackTrace();
